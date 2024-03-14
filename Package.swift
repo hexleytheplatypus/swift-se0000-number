@@ -14,7 +14,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "SE0430_Number",
+  name: "SE0000_Number",
   platforms: [ /// For `StaticBigInt`
     .macOS(.v14),
     .iOS(.v17),
@@ -23,19 +23,19 @@ let package = Package(
   ],
   products: [
     .library(
-      name: "SE0430_Number",
-      targets: ["SE0430_Number"]),
+      name: "SE0000_Number",
+      targets: ["SE0000_Number"]),
   ],
   dependencies: [
     .package(url: "https://github.com/hexleytheplatypus/ArbitraryPrecisionIntegers.git", from: "1.0.0"),
   ],
   targets: [
     .target(
-      name: "SE0430_Number",
+      name: "SE0000_Number",
       dependencies: ["ArbitraryPrecisionIntegers"]),
 
     .testTarget(
-      name: "SE0430_NumberTests",
-      dependencies: ["SE0430_Number"]),
+      name: "SE0000_NumberTests",
+      dependencies: ["SE0000_Number"]),
   ]
 )

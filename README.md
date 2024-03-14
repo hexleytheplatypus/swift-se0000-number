@@ -4,7 +4,7 @@
   inclusion in the Swift standard library, and is not intended for use in
   production code at this time.
 
-* Proposal: [SE-0430](0430-number.md)
+* Proposal: [SE-0000](0000-number.md)
 * Author: [C. Heath](https://github.com/hexleytheplatypus)
 
 
@@ -14,7 +14,7 @@ A short description of the proposed library.
 Provide examples and describe how they work.
 
 ```swift
-import SE0430_Number
+import SE0000_Number
 
 let lhs: Number = 2
 let rhs: Number = 2.4
@@ -22,7 +22,7 @@ print(lhs + rhs) // 4.4
 // Prints("22 / 5")
 ```
 
-<!--Commented Out until apple/swift-se0430-number exists-->
+<!--Commented Out until apple/swift-se0000-number exists-->
 <!--## Usage-->
 <!---->
 <!--To use this library in a Swift Package Manager project,-->
@@ -31,5 +31,5 @@ print(lhs + rhs) // 4.4
 <!--```swift-->
 <!--.package(-->
 <!--    url: "https://github.com/apple/swift-evolution-staging.git",-->
-<!--    .branch("SE0430_Number")),-->
+<!--    .branch("SE0000_Number")),-->
 <!--```-->
