@@ -130,34 +130,18 @@ extension Number: AdditiveArithmetic {
     ///   - lhs: The first value to add.
     ///   - rhs: The second value to add.
     public static func + (lhs: Self, rhs: Self) -> Self {
-        switch lhs {
-            case .real(let lhsReal):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsReal + rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsReal + rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsReal + rhsComplex)
-                }
-            case .imaginary(let lhsImaginary):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsImaginary + rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsImaginary + rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsImaginary + rhsComplex)
-                }
-            case .complex(let lhsComplex):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsComplex + rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsComplex + rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsComplex + rhsComplex)
-                }
+        switch (lhs, rhs) {
+            case let (.real(lhsReal),      .real(rhsReal     )): return self.init(lhsReal + rhsReal)
+            case let (.real(lhsReal), .imaginary(rhsImaginary)): return self.init(lhsReal + rhsImaginary)
+            case let (.real(lhsReal),   .complex(rhsComplex  )): return self.init(lhsReal + rhsComplex)
+
+            case let (.imaginary(lhsImaginary),      .real(rhsReal     )): return self.init(lhsImaginary + rhsReal)
+            case let (.imaginary(lhsImaginary), .imaginary(rhsImaginary)): return self.init(lhsImaginary + rhsImaginary)
+            case let (.imaginary(lhsImaginary),   .complex(rhsComplex  )): return self.init(lhsImaginary + rhsComplex)
+
+            case let (.complex(lhsComplex),      .real(let rhsReal     )): return self.init(lhsComplex + rhsReal)
+            case let (.complex(lhsComplex), .imaginary(let rhsImaginary)): return self.init(lhsComplex + rhsImaginary)
+            case let (.complex(lhsComplex),   .complex(let rhsComplex  )): return self.init(lhsComplex + rhsComplex)
         }
     }
 
@@ -504,7 +488,7 @@ extension Number {
     public init(_ unsigned: ArbitraryPrecisionUnsignedInteger) {
         self = .real(.rational(RationalNumber(unsigned)))
     }
-    
+
     public init(_ signed: ArbitraryPrecisionSignedInteger) {
         self = .real(.rational(RationalNumber(signed)))
     }
@@ -515,31 +499,31 @@ extension Number {
     public init(_ natural: NaturalNumber) {
         self.init(RationalNumber(natural))
     }
-    
+
     public init(_ whole: WholeNumber) {
         self.init(RationalNumber(whole))
     }
-    
+
     public init(_ integer: Integer) {
         self.init(RationalNumber(integer))
     }
-    
+
     public init(_ fraction: SimpleFraction) {
         self.init(RationalNumber(fraction))
     }
-    
+
     public init(_ rational: RationalNumber) {
         self.init(RealNumber(rational))
     }
-    
+
     public init(_ irrational: IrrationalNumber) {
         self.init(RealNumber(irrational))
     }
-    
+
     public init(_ real: RealNumber) {
         self = .real(real)
     }
-    
+
     public init(_ imaginary: ImaginaryNumber) {
         switch imaginary._storage {
             case .zero:
@@ -550,7 +534,7 @@ extension Number {
                 self = .imaginary(imaginary)
         }
     }
-    
+
     public init(_ complex: ComplexNumber) {
         switch complex._real {
             case .zero: self.init(complex._imaginary)
@@ -579,7 +563,7 @@ extension Number {
 
 // MARK: - Division Operator
 extension Number {
-    
+
     /// As `Number`s are a numeric value, division of any two `Number` are guaranteed to result in a `Number`.
     /// - Parameters:
     ///   - lhs (Left-hand Side): The value to divide.
