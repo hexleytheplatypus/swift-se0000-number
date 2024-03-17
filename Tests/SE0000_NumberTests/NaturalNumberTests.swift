@@ -24,23 +24,23 @@ class NaturalNumberTests: XCTestCase {
 extension Number {
     internal var typeValue: String {
         switch self {
-            case .complex(_):
+            case .c(_):
                 return "\(type(of: ComplexNumber.self))"
-            case .imaginary(_):
+            case .i(_):
                 return "\(type(of: ImaginaryNumber.self))"
-            case .real(let realNumber):
+            case .r(let realNumber):
                 switch realNumber {
-                    case .irrational(_):
+                    case .i(_):
                         return "\(type(of: IrrationalNumber.self))"
-                    case .rational(let rationalNumber):
+                    case .r(let rationalNumber):
                         switch rationalNumber {
-                            case .simpleFraction(_):
+                            case .f(_):
                                 return "\(type(of: SimpleFraction.self))"
-                            case .integer(_):
+                            case .i(_):
                                 return "\(type(of: Integer.self))"
-                            case .whole(_):
+                            case .w(_):
                                 return "\(type(of: WholeNumber.self))"
-                            case .natural(_):
+                            case .n(_):
                                 return "\(type(of: NaturalNumber.self))"
                         }
                 }

@@ -14,8 +14,8 @@ import ArbitraryPrecisionIntegers
 
 // MARK: - RealNumber
 public indirect enum RealNumber: Codable, Equatable, Hashable {
-    case rational(RationalNumber)
-    case irrational(IrrationalNumber)
+    case r(RationalNumber)
+    case i(IrrationalNumber)
 
     public static let zero = RealNumber(integerLiteral: 0)
     public static let one = RealNumber(integerLiteral: 1)
@@ -27,10 +27,8 @@ public indirect enum RealNumber: Codable, Equatable, Hashable {
 extension RealNumber {
     public var magnitude: Self {
         switch self {
-            case .rational(let rationalNumber):
-                return .rational(rationalNumber.magnitude)
-            case .irrational(let irrationalNumber):
-                return .irrational(irrationalNumber.magnitude)
+            case let .r(r): return .r(r.magnitude)
+            case let .i(i): return .i(i.magnitude)
         }
     }
 }
@@ -39,10 +37,8 @@ extension RealNumber {
 extension RealNumber {
     public static prefix func - (operand: Self) -> Self {
         switch operand {
-            case .rational(let rationalNumber):
-                return self.init(-rationalNumber)
-            case .irrational(let irrationalNumber):
-                return self.init(-irrationalNumber)
+            case let .r(r): return self.init(-r)
+            case let .i(i): return self.init(-i)
         }
     }
     
@@ -64,21 +60,11 @@ extension RealNumber: Comparable {
     //===--- Comparable -----------------------------------------------------===//
 
     public static func < (lhs: RealNumber, rhs: RealNumber) -> Bool {
-        switch lhs {
-            case .rational(let lhsRational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return lhsRational < rhsRational
-                    case .irrational(let rhsIrrational):
-                        return lhsRational < rhsIrrational
-                }
-            case .irrational(let lhsIrrational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return lhsIrrational < rhsRational
-                    case .irrational(let rhsIrrational):
-                        return lhsIrrational < rhsIrrational
-                }
+        switch (lhs, rhs) {
+            case let (.r(lhsR), .r(rhsR)): return (lhsR < rhsR)
+            case let (.r(lhsR), .i(rhsI)): return (lhsR < rhsI)
+            case let (.i(lhsI), .r(rhsR)): return (lhsI < rhsR)
+            case let (.i(lhsI), .i(rhsI)): return (lhsI < rhsI)
         }
     }
 
@@ -115,10 +101,8 @@ extension RealNumber: CustomStringConvertible {
 
     public var description: String {
         switch self {
-            case .rational(let rationalNumber):
-                return rationalNumber.description
-            case .irrational(let irrationalNumber):
-                return irrationalNumber.description
+            case let .r(r): return r.description
+            case let .i(i): return i.description
         }
     }
 }
@@ -138,49 +122,49 @@ extension RealNumber: Sendable {
 /// Arbitrary Precision Initializers
 extension RealNumber {
     public init(_ unsigned: ArbitraryPrecisionUnsignedInteger) {
-        self = .rational(RationalNumber(unsigned))
+        self = .r(RationalNumber(unsigned))
     }
     
     public init(_ signed: ArbitraryPrecisionSignedInteger) {
-        self = .rational(RationalNumber(signed))
+        self = .r(RationalNumber(signed))
     }
 }
     
 /// Other Number Classification Initializers
 extension RealNumber {
     public init(_ natural: NaturalNumber) {
-        self = .rational(RationalNumber(natural))
+        self = .r(RationalNumber(natural))
     }
     
     public init(_ whole: WholeNumber) {
-        self = .rational(RationalNumber(whole))
+        self = .r(RationalNumber(whole))
     }
     
     public init(_ integer: Integer) {
-        self = .rational(RationalNumber(integer))
+        self = .r(RationalNumber(integer))
     }
     
     public init(_ fraction: SimpleFraction) {
-        self = .rational(RationalNumber(fraction))
+        self = .r(RationalNumber(fraction))
     }
     
     public init(_ rational: RationalNumber) {
-        self = .rational(rational)
+        self = .r(rational)
     }
     
     public init(_ irrational: IrrationalNumber) {
-        self = .irrational(irrational)
+        self = .i(irrational)
     }
 
     public init?(_ number: Number) {
         switch number {
-            case .real(let realNumber):
+            case .r(let realNumber):
                 switch realNumber {
-                    case .rational(let rationalNumber): self.init(rationalNumber)
-                    case .irrational(let irrationalNumber): self.init(irrationalNumber)
+                    case .r(let rationalNumber): self.init(rationalNumber)
+                    case .i(let irrationalNumber): self.init(irrationalNumber)
                 }
-            case .imaginary(_): return nil
-            case .complex(_): return nil
+            case .i(_): return nil
+            case .c(_): return nil
         }
     }
 }
@@ -193,21 +177,11 @@ extension RealNumber {
     ///   - rhs (Right-hand Side): The second value to add.
     ///
     public static func + (lhs: RealNumber, rhs: RealNumber) -> RealNumber {
-        switch lhs {
-            case .rational(let lhsRational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return .rational(lhsRational + rhsRational)
-                    case .irrational(let rhsIrrational):
-                        return .irrational(lhsRational + rhsIrrational)
-                }
-            case .irrational(let lhsIrrational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return .irrational(lhsIrrational + rhsRational)
-                    case .irrational(let rhsIrrational):
-                        return .irrational(lhsIrrational + rhsIrrational)
-                }
+        switch (lhs, rhs) {
+            case let (.r(lhsR), .r(rhsR)): return self.init(lhsR + rhsR)
+            case let (.r(lhsR), .i(rhsI)): return self.init(lhsR + rhsI)
+            case let (.i(lhsI), .r(rhsR)): return self.init(lhsI + rhsR)
+            case let (.i(lhsI), .i(rhsI)): return self.init(lhsI + rhsI)
         }
     }
     
@@ -217,21 +191,11 @@ extension RealNumber {
     ///   - rhs (Right-hand Side): The value to subtract from `lhs`.
     ///
     public static func - (lhs: RealNumber, rhs: RealNumber) -> RealNumber {
-        switch lhs {
-            case .rational(let lhsRational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return .rational(lhsRational - rhsRational)
-                    case .irrational(let rhsIrrational):
-                        return .irrational(lhsRational - rhsIrrational)
-                }
-            case .irrational(let lhsIrrational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return .irrational(lhsIrrational - rhsRational)
-                    case .irrational(let rhsIrrational):
-                        return .irrational(lhsIrrational - rhsIrrational)
-                }
+        switch (lhs, rhs) {
+            case let (.r(lhsR), .r(rhsR)): return self.init(lhsR - rhsR)
+            case let (.r(lhsR), .i(rhsI)): return self.init(lhsR - rhsI)
+            case let (.i(lhsI), .r(rhsR)): return self.init(lhsI - rhsR)
+            case let (.i(lhsI), .i(rhsI)): return self.init(lhsI - rhsI)
         }
     }
     
@@ -241,21 +205,11 @@ extension RealNumber {
     ///   - rhs (Right-hand Side): The second value to multiply.
     ///
     public static func * (lhs: RealNumber, rhs: RealNumber) -> RealNumber {
-        switch lhs {
-            case .rational(let lhsRational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return .rational(lhsRational * rhsRational)
-                    case .irrational(let rhsIrrational):
-                        return .irrational(lhsRational * rhsIrrational)
-                }
-            case .irrational(let lhsIrrational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return .irrational(lhsIrrational * rhsRational)
-                    case .irrational(let rhsIrrational):
-                        return .irrational(lhsIrrational * rhsIrrational)
-                }
+        switch (lhs, rhs) {
+            case let (.r(lhsR), .r(rhsR)): return self.init(lhsR * rhsR)
+            case let (.r(lhsR), .i(rhsI)): return self.init(lhsR * rhsI)
+            case let (.i(lhsI), .r(rhsR)): return self.init(lhsI * rhsR)
+            case let (.i(lhsI), .i(rhsI)): return self.init(lhsI * rhsI)
         }
     }
     
@@ -265,21 +219,11 @@ extension RealNumber {
     ///   - rhs (Right-hand Side): The value to divide `lhs` by. `rhs` must not be `.zero`.
     ///
     public static func / (lhs: RealNumber, rhs: RealNumber) -> RealNumber {
-        switch lhs {
-            case .rational(let lhsRational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return .rational(lhsRational / rhsRational)
-                    case .irrational(let rhsIrrational):
-                        return .irrational(lhsRational / rhsIrrational)
-                }
-            case .irrational(let lhsIrrational):
-                switch rhs {
-                    case .rational(let rhsRational):
-                        return .irrational(lhsIrrational / rhsRational)
-                    case .irrational(let rhsIrrational):
-                        return .irrational(lhsIrrational / rhsIrrational)
-                }
+        switch (lhs, rhs) {
+            case let (.r(lhsR), .r(rhsR)): return self.init(lhsR / rhsR)
+            case let (.r(lhsR), .i(rhsI)): return self.init(lhsR / rhsI)
+            case let (.i(lhsI), .r(rhsR)): return self.init(lhsI / rhsR)
+            case let (.i(lhsI), .i(rhsI)): return self.init(lhsI / rhsI)
         }
     }
 }

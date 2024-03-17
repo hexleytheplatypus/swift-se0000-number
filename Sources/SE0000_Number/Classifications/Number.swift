@@ -14,9 +14,9 @@ import ArbitraryPrecisionIntegers
 
 // MARK: - Number
 public enum Number: Codable, Hashable {
-    case real(RealNumber)
-    case imaginary(ImaginaryNumber)
-    case complex(ComplexNumber)
+    case r(RealNumber)
+    case i(ImaginaryNumber)
+    case c(ComplexNumber)
 
     public static let zero = Number(integerLiteral: 0)
     public static let one = Number(integerLiteral: 1)
@@ -131,17 +131,15 @@ extension Number: AdditiveArithmetic {
     ///   - rhs: The second value to add.
     public static func + (lhs: Self, rhs: Self) -> Self {
         switch (lhs, rhs) {
-            case let (.real(lhsReal),      .real(rhsReal     )): return self.init(lhsReal + rhsReal)
-            case let (.real(lhsReal), .imaginary(rhsImaginary)): return self.init(lhsReal + rhsImaginary)
-            case let (.real(lhsReal),   .complex(rhsComplex  )): return self.init(lhsReal + rhsComplex)
-
-            case let (.imaginary(lhsImaginary),      .real(rhsReal     )): return self.init(lhsImaginary + rhsReal)
-            case let (.imaginary(lhsImaginary), .imaginary(rhsImaginary)): return self.init(lhsImaginary + rhsImaginary)
-            case let (.imaginary(lhsImaginary),   .complex(rhsComplex  )): return self.init(lhsImaginary + rhsComplex)
-
-            case let (.complex(lhsComplex),      .real(let rhsReal     )): return self.init(lhsComplex + rhsReal)
-            case let (.complex(lhsComplex), .imaginary(let rhsImaginary)): return self.init(lhsComplex + rhsImaginary)
-            case let (.complex(lhsComplex),   .complex(let rhsComplex  )): return self.init(lhsComplex + rhsComplex)
+            case let (.r(lhsR), .r(rhsR)): return self.init(lhsR + rhsR)
+            case let (.r(lhsR), .i(rhsI)): return self.init(lhsR + rhsI)
+            case let (.r(lhsR), .c(rhsC)): return self.init(lhsR + rhsC)
+            case let (.i(lhsI), .r(rhsR)): return self.init(lhsI + rhsR)
+            case let (.i(lhsI), .i(rhsI)): return self.init(lhsI + rhsI)
+            case let (.i(lhsI), .c(rhsC)): return self.init(lhsI + rhsC)
+            case let (.c(lhsC), .r(rhsR)): return self.init(lhsC + rhsR)
+            case let (.c(lhsC), .i(rhsI)): return self.init(lhsC + rhsI)
+            case let (.c(lhsC), .c(rhsC)): return self.init(lhsC + rhsC)
         }
     }
 
@@ -159,34 +157,16 @@ extension Number: AdditiveArithmetic {
     ///   - lhs: A numeric value.
     ///   - rhs: The value to subtract from `lhs`.
     public static func - (lhs: Self, rhs: Self) -> Self {
-        switch lhs {
-            case .real(let lhsReal):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsReal - rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsReal - rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsReal - rhsComplex)
-                }
-            case .imaginary(let lhsImaginary):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsImaginary - rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsImaginary - rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsImaginary - rhsComplex)
-                }
-            case .complex(let lhsComplex):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsComplex - rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsComplex - rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsComplex - rhsComplex)
-                }
+        switch (lhs, rhs) {
+            case let (.r(lhsR), .r(rhsR)): return self.init(lhsR - rhsR)
+            case let (.r(lhsR), .i(rhsI)): return self.init(lhsR - rhsI)
+            case let (.r(lhsR), .c(rhsC)): return self.init(lhsR - rhsC)
+            case let (.i(lhsI), .r(rhsR)): return self.init(lhsI - rhsR)
+            case let (.i(lhsI), .i(rhsI)): return self.init(lhsI - rhsI)
+            case let (.i(lhsI), .c(rhsC)): return self.init(lhsI - rhsC)
+            case let (.c(lhsC), .r(rhsR)): return self.init(lhsC - rhsR)
+            case let (.c(lhsC), .i(rhsI)): return self.init(lhsC - rhsI)
+            case let (.c(lhsC), .c(rhsC)): return self.init(lhsC - rhsC)
         }
     }
 }
@@ -206,34 +186,16 @@ extension Number: Comparable {
     ///   - lhs: A value to compare.
     ///   - rhs: Another value to compare.
     public static func < (lhs: Self, rhs: Self) -> Bool {
-        switch lhs {
-            case .real(let lhsReal):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return lhsReal < rhsReal
-                    case .imaginary(let rhsImaginary):
-                        return lhsReal < rhsImaginary
-                    case .complex(let rhsComplex):
-                        return lhsReal < rhsComplex
-                }
-            case .imaginary(let lhsImaginary):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return lhsImaginary < rhsReal
-                    case .imaginary(let rhsImaginary):
-                        return lhsImaginary < rhsImaginary
-                    case .complex(let rhsComplex):
-                        return lhsImaginary < rhsComplex
-                }
-            case .complex(let lhsComplex):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return lhsComplex < rhsReal
-                    case .imaginary(let rhsImaginary):
-                        return lhsComplex < rhsImaginary
-                    case .complex(let rhsComplex):
-                        return lhsComplex < rhsComplex
-                }
+        switch (lhs, rhs) {
+            case let (.r(lhsR), .r(rhsR)): return (lhsR < rhsR)
+            case let (.r(lhsR), .i(rhsI)): return (lhsR < rhsI)
+            case let (.r(lhsR), .c(rhsC)): return (lhsR < rhsC)
+            case let (.i(lhsI), .r(rhsR)): return (lhsI < rhsR)
+            case let (.i(lhsI), .i(rhsI)): return (lhsI < rhsI)
+            case let (.i(lhsI), .c(rhsC)): return (lhsI < rhsC)
+            case let (.c(lhsC), .r(rhsR)): return (lhsC < rhsR)
+            case let (.c(lhsC), .i(rhsI)): return (lhsC < rhsI)
+            case let (.c(lhsC), .c(rhsC)): return (lhsC < rhsC)
         }
     }
 }
@@ -267,12 +229,9 @@ extension Number: CustomStringConvertible {
     /// `Point` type's `description` property.
     public var description: String {
         switch self {
-            case .real(let realNumber):
-                return realNumber.description
-            case .imaginary(let imaginaryNumber):
-                return imaginaryNumber.description
-            case .complex(let complexNumber):
-                return complexNumber.description
+            case let .r(r): return r.description
+            case let .i(i): return i.description
+            case let .c(c): return c.description
         }
     }
 }
@@ -290,29 +249,18 @@ extension Number: Equatable {
     ///   - lhs: A value to compare.
     ///   - rhs: Another value to compare.
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        switch lhs {
-            case .real(let lhsReal):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return lhsReal == rhsReal
-                    default: return false
-                }
-            case .imaginary(let lhsImaginary):
-                switch rhs {
-                    case .imaginary(let rhsImaginary):
-                        return lhsImaginary == rhsImaginary
-                    case .complex(let rhsComplex):
-                        return lhsImaginary == rhsComplex._imaginary && RealNumber.zero == rhsComplex._real
-                    default: return false
-                }
-            case .complex(let lhsComplex):
-                switch rhs {
-                    case .imaginary(let rhsImaginary):
-                        return lhsComplex._imaginary == rhsImaginary && lhsComplex._real == RealNumber.zero
-                    case .complex(let rhsComplex):
-                        return lhsComplex == rhsComplex
-                    default: return false
-                }
+        switch (lhs, rhs) {
+            case (.r(_), .i(_)): return false
+            case (.r(_), .c(_)): return false
+            case (.i(_), .r(_)): return false
+            case (.c(_), .r(_)): return false
+            case let (.r(lhsR), .r(rhsR)): return (lhsR == rhsR)
+            case let (.i(lhsI), .i(rhsI)): return (lhsI == rhsI)
+            case let (.c(lhsC), .c(rhsC)): return (lhsC == rhsC)
+            case let (.i(lhsI), .c(rhsC)):
+                return lhsI == rhsC._imaginary && rhsC._real == .zero
+            case let (.c(lhsC), .i(rhsI)):
+                return lhsC._imaginary == rhsI && lhsC._real == .zero
         }
     }
 }
@@ -377,12 +325,9 @@ extension Number: Numeric {
     /// instead of the `magnitude` property is encouraged.
     public var magnitude: Self {
         switch self {
-            case .real(let realNumber):
-                return .real(realNumber.magnitude)
-            case .imaginary(let imaginaryNumber):
-                return .real(imaginaryNumber.magnitude)
-            case .complex(let complexNumber):
-                return complexNumber.magnitude
+            case let .r(r): return .r(r.magnitude)
+            case let .i(i): return .r(i.magnitude)
+            case let .c(c): return   (c.magnitude)
         }
     }
 
@@ -401,34 +346,16 @@ extension Number: Numeric {
     ///   - rhs: The second value to multiply.
     ///
     public static func * (lhs: Self, rhs: Self) -> Self {
-        switch lhs {
-            case .real(let lhsReal):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsReal * rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsReal * rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsReal * rhsComplex)
-                }
-            case .imaginary(let lhsImaginary):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsImaginary * rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsImaginary * rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsImaginary * rhsComplex)
-                }
-            case .complex(let lhsComplex):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsComplex * rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsComplex * rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsComplex * rhsComplex)
-                }
+        switch (lhs, rhs) {
+            case let (.r(lhsR), .r(rhsR)): return self.init(lhsR * rhsR)
+            case let (.r(lhsR), .i(rhsI)): return self.init(lhsR * rhsI)
+            case let (.r(lhsR), .c(rhsC)): return self.init(lhsR * rhsC)
+            case let (.i(lhsI), .r(rhsR)): return self.init(lhsI * rhsR)
+            case let (.i(lhsI), .i(rhsI)): return self.init(lhsI * rhsI)
+            case let (.i(lhsI), .c(rhsC)): return self.init(lhsI * rhsC)
+            case let (.c(lhsC), .r(rhsR)): return self.init(lhsC * rhsR)
+            case let (.c(lhsC), .i(rhsI)): return self.init(lhsC * rhsI)
+            case let (.c(lhsC), .c(rhsC)): return self.init(lhsC * rhsC)
         }
     }
 }
@@ -454,12 +381,9 @@ extension Number: SignedNumeric {
     /// - Returns: The additive inverse of this value.
     public static prefix func - (operand: Self) -> Self {
         switch operand {
-            case .real(let realNumber):
-                return self.init(-realNumber)
-            case .imaginary(let imaginaryNumber):
-                return self.init(-imaginaryNumber)
-            case .complex(let complexNumber):
-                return self.init(-complexNumber)
+            case let .r(r): return self.init(-r)
+            case let .i(i): return self.init(-i)
+            case let .c(c): return self.init(-c)
         }
     }
 
@@ -486,11 +410,11 @@ extension Number: Strideable {
 // MARK: - Arbitrary Precision Initializers
 extension Number {
     public init(_ unsigned: ArbitraryPrecisionUnsignedInteger) {
-        self = .real(.rational(RationalNumber(unsigned)))
+        self = .r(.r(RationalNumber(unsigned)))
     }
 
     public init(_ signed: ArbitraryPrecisionSignedInteger) {
-        self = .real(.rational(RationalNumber(signed)))
+        self = .r(.r(RationalNumber(signed)))
     }
 }
 
@@ -521,7 +445,7 @@ extension Number {
     }
 
     public init(_ real: RealNumber) {
-        self = .real(real)
+        self = .r(real)
     }
 
     public init(_ imaginary: ImaginaryNumber) {
@@ -531,7 +455,7 @@ extension Number {
             case .one:
                 self = .i
             default:
-                self = .imaginary(imaginary)
+                self = .i(imaginary)
         }
     }
 
@@ -542,7 +466,7 @@ extension Number {
                 switch complex._imaginary._storage {
                     case .zero: self.init(complex._real)
                     default:
-                        self = .complex(complex)
+                        self = .c(complex)
                 }
         }
     }
@@ -570,34 +494,16 @@ extension Number {
     ///   - rhs (Right-hand Side): The value to divide `lhs` by. `rhs` must not be `.zero`.
     ///
     public static func / (lhs: Self, rhs: Self) -> Self {
-        switch lhs {
-            case .real(let lhsReal):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsReal / rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsReal / rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsReal / rhsComplex)
-                }
-            case .imaginary(let lhsImaginary):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsImaginary / rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsImaginary / rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsImaginary / rhsComplex)
-                }
-            case .complex(let lhsComplex):
-                switch rhs {
-                    case .real(let rhsReal):
-                        return self.init(lhsComplex / rhsReal)
-                    case .imaginary(let rhsImaginary):
-                        return self.init(lhsComplex / rhsImaginary)
-                    case .complex(let rhsComplex):
-                        return self.init(lhsComplex / rhsComplex)
-                }
+        switch (lhs, rhs) {
+            case let (.r(lhsR), .r(rhsR)): return self.init(lhsR / rhsR)
+            case let (.r(lhsR), .i(rhsI)): return self.init(lhsR / rhsI)
+            case let (.r(lhsR), .c(rhsC)): return self.init(lhsR / rhsC)
+            case let (.i(lhsI), .r(rhsR)): return self.init(lhsI / rhsR)
+            case let (.i(lhsI), .i(rhsI)): return self.init(lhsI / rhsI)
+            case let (.i(lhsI), .c(rhsC)): return self.init(lhsI / rhsC)
+            case let (.c(lhsC), .r(rhsR)): return self.init(lhsC / rhsR)
+            case let (.c(lhsC), .i(rhsI)): return self.init(lhsC / rhsI)
+            case let (.c(lhsC), .c(rhsC)): return self.init(lhsC / rhsC)
         }
     }
 }
@@ -631,9 +537,9 @@ extension Number {
         }
 
         switch self {
-            case .real(_):
+            case .r(_):
                 switch exponent {
-                    case .real(_):
+                    case .r(_):
                         var result: Number = .one
                         var power = exponent
                         var wholePower: WholeNumber = .zero
@@ -656,27 +562,27 @@ extension Number {
                             }
                         }
                         return result
-                    case .imaginary(let imaginaryNumber):
+                    case .i(let imaginaryNumber):
                         fatalError("TODO: - \(Self.self).\(#function)")
-                    case .complex(let complexNumber):
-                        fatalError("TODO: - \(Self.self).\(#function)")
-                }
-            case .imaginary(let imaginaryNumber):
-                switch exponent {
-                    case .real(let realNumber):
-                        fatalError("TODO: - \(Self.self).\(#function)")
-                    case .imaginary(let imaginaryNumber):
-                        fatalError("TODO: - \(Self.self).\(#function)")
-                    case .complex(let complexNumber):
+                    case .c(let complexNumber):
                         fatalError("TODO: - \(Self.self).\(#function)")
                 }
-            case .complex(let complexNumber):
+            case .i(let imaginaryNumber):
                 switch exponent {
-                    case .real(let realNumber):
+                    case .r(let realNumber):
                         fatalError("TODO: - \(Self.self).\(#function)")
-                    case .imaginary(let imaginaryNumber):
+                    case .i(let imaginaryNumber):
                         fatalError("TODO: - \(Self.self).\(#function)")
-                    case .complex(let complexNumber):
+                    case .c(let complexNumber):
+                        fatalError("TODO: - \(Self.self).\(#function)")
+                }
+            case .c(let complexNumber):
+                switch exponent {
+                    case .r(let realNumber):
+                        fatalError("TODO: - \(Self.self).\(#function)")
+                    case .i(let imaginaryNumber):
+                        fatalError("TODO: - \(Self.self).\(#function)")
+                    case .c(let complexNumber):
                         fatalError("TODO: - \(Self.self).\(#function)")
                 }
         }

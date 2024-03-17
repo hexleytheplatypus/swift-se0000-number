@@ -22,10 +22,10 @@ public struct ImaginaryNumber: Codable, Equatable, Hashable {
     
     public init?(_ number: Number) {
         switch number {
-            case .real(let realNumber):
+            case .r(let realNumber):
                 self.init(realNumber)
-            case .imaginary(_): return nil
-            case .complex(_): return nil
+            case .i(_): return nil
+            case .c(_): return nil
         }
     }
 }

@@ -86,13 +86,13 @@ extension WholeNumber: Comparable {
 
     public static func < (lhs: WholeNumber, rhs: RationalNumber) -> Bool {
         switch rhs {
-            case .natural(let naturalNumber):
+            case .n(let naturalNumber):
                 return lhs < naturalNumber
-            case .whole(let wholeNumber):
+            case .w(let wholeNumber):
                 return lhs < wholeNumber
-            case .integer(let integer):
+            case .i(let integer):
                 return lhs < integer
-            case .simpleFraction(let fraction):
+            case .f(let fraction):
                 return lhs < fraction
         }
     }
@@ -192,29 +192,29 @@ extension WholeNumber {
     
     public init?(_ rational: RationalNumber) {
         switch rational {
-            case .natural(let naturalNumber):
+            case .n(let naturalNumber):
                 self.init(naturalNumber)
-            case .whole(let wholeNumber):
+            case .w(let wholeNumber):
                 self = wholeNumber
-            case .integer(let integer):
+            case .i(let integer):
                 self.init(integer)
-            case .simpleFraction(let fraction):
+            case .f(let fraction):
                 self.init(fraction)
         }
     }
     
     public init?(_ real: RealNumber) {
         switch real {
-            case .rational(let rationalNumber): self.init(rationalNumber)
-            case .irrational(_): return nil
+            case .r(let rationalNumber): self.init(rationalNumber)
+            case .i(_): return nil
         }
     }
     
     public init?(_ number: Number) {
         switch number {
-            case .real(let realNumber): self.init(realNumber)
-            case .imaginary(_): return nil
-            case .complex(_): return nil
+            case .r(let realNumber): self.init(realNumber)
+            case .i(_): return nil
+            case .c(_): return nil
         }
     }
 }
@@ -385,13 +385,13 @@ extension WholeNumber {
     ///
     public static func + (lhs: WholeNumber, rhs: RationalNumber) -> RationalNumber {
         switch rhs {
-            case .natural(let naturalNumber):
+            case .n(let naturalNumber):
                 return RationalNumber(lhs + naturalNumber)
-            case .whole(let wholeNumber):
+            case .w(let wholeNumber):
                 return RationalNumber(lhs + wholeNumber)
-            case .integer(let integer):
+            case .i(let integer):
                 return RationalNumber(lhs + integer)
-            case .simpleFraction(let fraction):
+            case .f(let fraction):
                 return RationalNumber(lhs + fraction)
         }
     }
@@ -403,13 +403,13 @@ extension WholeNumber {
     ///
     public static func - (lhs: WholeNumber, rhs: RationalNumber) -> RationalNumber {
         switch rhs {
-            case .natural(let naturalNumber):
+            case .n(let naturalNumber):
                 return RationalNumber(lhs - naturalNumber)
-            case .whole(let wholeNumber):
+            case .w(let wholeNumber):
                 return RationalNumber(lhs - wholeNumber)
-            case .integer(let integer):
+            case .i(let integer):
                 return RationalNumber(lhs - integer)
-            case .simpleFraction(let fraction):
+            case .f(let fraction):
                 return RationalNumber(lhs - fraction)
         }
     }
@@ -421,13 +421,13 @@ extension WholeNumber {
     ///
     public static func * (lhs: WholeNumber, rhs: RationalNumber) -> RationalNumber {
         switch rhs {
-            case .natural(let naturalNumber):
+            case .n(let naturalNumber):
                 return RationalNumber(lhs * naturalNumber)
-            case .whole(let wholeNumber):
+            case .w(let wholeNumber):
                 return RationalNumber(lhs * wholeNumber)
-            case .integer(let integer):
+            case .i(let integer):
                 return RationalNumber(lhs * integer)
-            case .simpleFraction(let fraction):
+            case .f(let fraction):
                 return RationalNumber(lhs * fraction)
         }
     }
@@ -439,13 +439,13 @@ extension WholeNumber {
     ///
     public static func / (lhs: WholeNumber, rhs: RationalNumber) -> RationalNumber {
         switch rhs {
-            case .natural(let naturalNumber):
+            case .n(let naturalNumber):
                 return RationalNumber(lhs / naturalNumber)
-            case .whole(let wholeNumber):
+            case .w(let wholeNumber):
                 return RationalNumber(lhs / wholeNumber)
-            case .integer(let integer):
+            case .i(let integer):
                 return RationalNumber(lhs / integer)
-            case .simpleFraction(let fraction):
+            case .f(let fraction):
                 return RationalNumber(lhs / fraction)
         }
     }
